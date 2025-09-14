@@ -1,0 +1,35 @@
+﻿// query 1
+EVALUATE
+ADDCOLUMNS(
+	VALUES(Sales[brand]),
+	"AVG sales", AVERAGE(Sales[Unit Cost])
+)
+// query 2
+EVALUATE
+VAR	__t1 = ADDCOLUMNS(
+	VALUES(Sales[brand]),
+	"@AVG sales", CALCULATE(AVERAGE(Sales[Unit Cost]))
+)
+VAR __AVG = AVERAGEX(__t1, [@AVG sales])
+RETURN
+	UNION(__t1,
+	ROW("col1","Global AVG","val",__AVG)
+	)
+// Query 3
+EVALUATE
+ROW(
+	"AVG of AVG",
+		AVERAGEX(
+			VALUES(Sales[brand]),
+			AVERAGE(Sales[Unit Cost])
+		)
+)
+// Query 4
+EVALUATE
+ROW(
+	"AVG of AVG",
+		AVERAGEX(
+			VALUES(Sales[brand]),
+			CALCULATE(AVERAGE(Sales[Unit Cost]))
+		)
+)

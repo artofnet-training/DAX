@@ -1,0 +1,25 @@
+﻿DEFINE
+var filter1 = FILTER(sales,
+	RELATED('Product'[Brand]) IN {"CONTOSO","fabrikam"}
+	)
+var filter2 = FILTER(filter1,
+	RELATED('Product'[Color])="blue" && RELATED(Customer[Education])="High school"
+	)
+	
+EVALUATE
+SELECTCOLUMNS(
+	filter2,
+	"amount",[Sales Amount],
+	"order date",FORMAT(Sales[Order Date],"","fr-CH"),
+	"sort nb", Sales[OrderDateKey],
+	"COLOR", RELATED('Product'[Color]),
+	"EDUCATION",RELATED(Customer[Education])
+)
+ORDER BY [sort nb] ASC, [amount] DESC
+
+EVALUATE
+VAR __resultSales = CALCULATE([Sales Amount],filter2)
+VAR	__resultqty = CALCULATE(SUM(Sales[Quantity]),filter2)
+return 
+	ROW("Total Sales",__resultSales,"Total Quantity", __resultqty)
+	

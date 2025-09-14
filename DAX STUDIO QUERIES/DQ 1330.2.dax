@@ -1,0 +1,26 @@
+﻿EVALUATE
+GENERATE (
+    SUMMARIZE ( Sales, 'Date'[Year] ),
+    VAR TopThree =
+        TOPN (
+            3,
+            ADDCOLUMNS (
+                VALUES ( 'Product'[Product Name] ),
+                "Amt", [Sales Amount],
+                "IsOther", 0
+            ),
+            [Amt]
+        )
+    VAR TopThreeSales =
+        SUMX ( TopThree, [Amt] )
+    VAR AllSales = [Sales Amount]
+    VAR OtherSales = AllSales - TopThreeSales
+    VAR OtherRow =
+        ROW ( "Product Name", "Others", "Amt", OtherSales, "IsOther", 1 )
+    RETURN
+        UNION ( TopThree, OtherRow )
+)
+ORDER BY
+    'Date'[Year] ASC,
+    [IsOther] ASC,
+    [Amt] DESC

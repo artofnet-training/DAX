@@ -1,0 +1,23 @@
+﻿EVALUATE
+
+	VAR __DTD = DATEDIFF(
+		DATE(YEAR(NOW()), 1, 1),
+		NOW(),
+		DAY
+	)
+	RETURN
+		UNION(
+			DATATABLE(
+			"Period Name",STRING,
+			"NB days",INTEGER,
+			{
+			{"Last 7 days",7},
+			{"Last 30 days",30},
+			{"Last 90 days",90}
+			}
+			),
+			ROW(
+				"name", "Last " & __DTD & " days",
+				"val", __DTD
+			)
+		)

@@ -1,0 +1,17 @@
+﻿EVALUATE
+SUMMARIZE(Sales,
+		'Product'[Brand],
+		'Date'[Year],
+		"Sales", SUM(Sales[Quantity] )	
+		// this syntax works but it's not recommended
+)
+EVALUATE
+ADDCOLUMNS(
+	SUMMARIZE(Sales,
+		'Product'[Brand],
+		'Date'[Year]
+			),
+	"Sales", SUM(Sales[Quantity] ),
+	"Sales correct", CALCULATE(SUM(Sales[Quantity]))
+	// this syntax is recommended
+)

@@ -1,0 +1,22 @@
+﻿EVALUATE
+VAR filter1 = SUMMARIZECOLUMNS(Customer[CustomerKey],
+								FILTER(sales,
+								[Sales Amount] > 1000)
+								,TREATAS({"Canada"}, Customer[CountryRegion])
+								)
+    
+   VAR __selectedvalue = 3
+   VAR __custfilter =
+     FILTER(Customer,
+     // use CALCULATE to force context transition in order to filter the Sales Table with the current customer before counting the resulting Productkey values.
+        CALCULATE(
+            DISTINCTCOUNT('Sales'[OrderDateKey])
+        ) >= __selectedvalue
+     )
+	 VAR filter2 = SELECTCOLUMNS(__custfilter,Customer[CustomerKey])
+    RETURN
+    INTERSECT(filter2,filter1)
+
+
+
+  

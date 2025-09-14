@@ -1,0 +1,88 @@
+﻿// Result 1
+DEFINE 
+VAR __continent = "North America"
+EVALUATE
+   CALCULATETABLE(
+	// CALCULATE that outputs a table
+	ROW(
+	// Creates a row in the table
+		// 1st column
+		"AVG sales GLOBAL",
+				AVERAGEX(
+				sales,
+				[Sales Amount]),
+		// 2nd column
+		"AVG sales w CALCULATE",
+				CALCULATE(
+				AVERAGEX(
+				sales,
+				[Sales Amount]),
+				Customer[Continent]=__continent
+				),
+		// 3rd column
+		"AVG Sales w FILTER",
+		CALCULATE(
+				AVERAGEX(
+				// FILTER inside CALCULATE does not apply the context transition 
+				FILTER(Sales,
+					RELATED(Customer[Continent])=__continent
+					),
+				Sales[Quantity]*Sales[Net Price]
+				)
+				),
+		// 4th column
+		"continent",
+				__continent
+		)
+	)
+
+// Result 2
+EVALUATE
+ADDCOLUMNS(
+//column #1
+SUMMARIZECOLUMNS(Customer[Continent],Sales),
+//column #2
+"AVG SALES",
+// no filter context here, all the rows in Sales are being considered
+AVERAGEX(Sales,
+			[Sales Amount]),
+//column #3
+" AVG SALES CALC.",
+// context transition here since CALCULATE is used with an iterator
+// The Sales table is filtered by the continent 
+CALCULATE(AVERAGEX(Sales,
+			[Sales Amount])
+),
+//column #4
+"AVG Qty",
+// NO context transition, global average
+AVERAGEX(Sales,
+		Sales[Quantity]
+),
+//column #5
+"AVG Qty CALC.",
+// context transition
+CALCULATE(AVERAGEX(Sales,
+			Sales[Quantity])
+),
+
+//column #6
+"AVG Delivery WD",
+// NO context transition, global average
+AVERAGEX(Sales,
+		Sales[DeliveryWorkingDays]
+),
+//column #7
+"AVG Delivery WD calc.",
+// context transition
+CALCULATE(AVERAGEX(Sales,
+			Sales[DeliveryWorkingDays])
+),
+//column #8
+"Sales Amount",
+CALCULATE([Sales Amount]),
+// colulmn #9
+"Rank",
+CALCULATE(RANKX(ALL(Customer[Continent]),[Sales Amount],,DESC,Dense))
+)
+ORDER BY [Rank]

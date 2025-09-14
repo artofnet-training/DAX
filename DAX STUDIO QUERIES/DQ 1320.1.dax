@@ -1,0 +1,14 @@
+﻿EVALUATE
+SUMMARIZECOLUMNS (
+    'Product'[Color],
+    Customer[Education],
+    TREATAS ( { "Contoso", "Fabrikam" },'Product'[Brand]),
+    TREATAS ( { "Red", "Blue" }, 'Product'[Color] ),
+    "Amount", FORMAT([Sales Amount],"currency","fr-ch"),
+    "Qty", SUM ( Sales[Quantity] )
+)
+ORDER BY 'Product'[Color],Customer[Education]
+
+
+EVALUATE
+{{userculture()}}

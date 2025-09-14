@@ -1,0 +1,18 @@
+﻿EVALUATE
+VAR	__mydate = DATE(2008,1,15)
+VAR __enddate =	DATE(YEAR(__mydate),MONTH(__mydate)+3,DAY(__mydate))
+RETURN
+DATESBETWEEN('Date'[Date],
+	__mydate,
+	__enddate
+)
+
+EVALUATE
+VAR	__mydate = DATE(2008,1,15)
+VAR __enddate =	DATE(YEAR(__mydate),MONTH(__mydate)+3,DAY(__mydate))
+RETURN
+DATESINPERIOD('Date'[Date],
+	__mydate,
+	3,
+	MONTH
+)

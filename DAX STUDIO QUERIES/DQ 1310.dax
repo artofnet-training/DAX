@@ -1,0 +1,17 @@
+﻿// Shows the same resulting table by using SUMMARIZE and SUMMARIZECOLUMNS
+EVALUATE
+SUMMARIZE(Sales,
+Customer[Continent],
+"SALES",[Sales Amount],
+"#cust",DISTINCTCOUNT(Sales[CustomerKey]),
+"AVG per cust.",DIVIDE([Sales Amount],DISTINCTCOUNT(Sales[CustomerKey])),
+"% Sales Global", FORMAT(DIVIDE([Sales Amount], CALCULATE([Sales Amount],REMOVEFILTERS(Sales))),"0.00%")
+)
+
+EVALUATE
+SUMMARIZECOLUMNS(Customer[Continent], Sales,
+"SALES",[Sales Amount],
+"#cust",DISTINCTCOUNT(Sales[CustomerKey]),
+"AVG per cust.",DIVIDE([Sales Amount],DISTINCTCOUNT(Sales[CustomerKey])),
+"% Sales Global", FORMAT(DIVIDE([Sales Amount], CALCULATE([Sales Amount],REMOVEFILTERS(Sales))),"0.00%")
+)

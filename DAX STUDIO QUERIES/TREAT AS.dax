@@ -1,0 +1,40 @@
+﻿EVALUATE
+// Example of data lineage and filtering  by a column even though it has lost its data lineage with the table to be filtered
+// Context transition will no longer work if the data lineage is broken with the original columns. TREAT AS restores that link.
+// The result contains the total sales amount of every first purchase for each item in the DB
+
+VAR ProductsWithSales =
+// Create a table with all the products names
+    SUMMARIZE (
+        Sales,
+        'Product'[Product Name]
+    )
+VAR ProductsAndFirstDate =
+// Find the first order date in sales for eahc product
+// The context transition comes from using CALCULATE inside the ADDCOLUMNS iterator
+    ADDCOLUMNS (
+        ProductsWithSales,
+        "First Sale", CALCULATE (
+            MIN ( Sales[Order Date] )
+			// MIN breaks the data lineage of Sales[Order Date]
+        )
+    )
+	
+VAR ProductsAndFirstDateWithCorrectLineage =
+// redefine the data lineage of the columns in the ProductsAndFirstDate table
+// 1st column should have the lineage of Product[name]
+// 2nd column ([First Sale]) should have the lineage of Date[date]
+    TREATAS (
+        ProductsAndFirstDate,
+        'Product'[Product Name],
+        'Date'[Date]
+    )
+
+	VAR Result =
+    ROW("resut",
+	CALCULATE (
+        [Sales Amount],
+        ProductsAndFirstDateWithCorrectLineage
+		)
+	)
+RETURN Result

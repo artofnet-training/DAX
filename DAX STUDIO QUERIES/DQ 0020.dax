@@ -1,0 +1,19 @@
+﻿EVALUATE
+FILTER(Customer,
+Customer[Name] > "x*")
+
+EVALUATE
+FILTER(Customer,
+Customer[Name] > "jo*" &&
+Customer[Name] < "ki*"
+)
+ORDER BY Customer[Name]
+
+EVALUATE
+FILTER(Customer,
+	AND(
+	Customer[Name] > "jo*",
+	Customer[Name] < "ki*"
+		)
+	)
+ORDER BY Customer[Name]

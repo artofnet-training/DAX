@@ -1,0 +1,13 @@
+﻿DEFINE
+    MEASURE '01.Measures'[Top3] =
+        SUMX (
+            TOPN (
+                3,
+                SUMMARIZECOLUMNS ( 'Product'[Color], "Sales", [Sales Amount] ),
+                [Sales]
+            ),
+            [Sales]
+        )
+
+EVALUATE
+SUMMARIZECOLUMNS ( 'Product'[Brand], "SalesTop3", [Top3] )

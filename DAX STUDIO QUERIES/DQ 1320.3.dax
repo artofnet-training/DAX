@@ -1,0 +1,41 @@
+﻿EVALUATE
+VAR Colors =
+// TREATAS used with a list of values to filter the colors according to the values in the list and ensure data lineage with the color column
+    TREATAS (
+        {
+            "Blue",
+            "Red"
+        },
+        'Product'[Color]
+    )
+VAR Brands =
+    TREATAS (
+        {
+            "Contoso",
+            "Fabrikam"
+        },
+        'Product'[Brand]
+    )
+VAR Res =
+    SUMMARIZECOLUMNS (
+        'Product'[Color],
+        Customer[Education],
+        Colors,
+        Brands,
+        "Sales", [Sales Amount]
+    )
+VAR AvgAmt =
+    AVERAGEX (
+        Res,
+        [Sales]
+    )
+VAR Result =
+   ADDCOLUMNS(
+		FILTER (
+			Res,
+			[Sales] < AvgAmt
+		),
+		"AVG",AvgAmt
+   )
+RETURN
+    Result

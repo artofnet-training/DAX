@@ -1,0 +1,22 @@
+﻿EVALUATE
+TOPN ( 10, ALL ( Customer[Name], Customer[Birth Date] ),Customer[Birth Date], ASC )
+
+
+--  Example of using math over dates to compute
+--  the age of the customers
+--  by subtracting from TODAY the birth date
+--
+EVALUATE
+ADDCOLUMNS (
+    TOPN ( 10, ALL ( Customer[Name], Customer[Birth Date] ), Customer[Birth Date], ASC ),
+    "Customer Age",
+    VAR Age = TODAY () - Customer[Birth Date]
+    VAR AgeYears = YEAR ( Age ) - 1900
+    VAR AgeMonths = MONTH ( Age )
+    RETURN
+        Age & " " & agemonths &" "&FORMAT ( AgeYears, "0" ) & " years and " & FORMAT ( AgeMonths, "0" ) & " months"
+    )
+ORDER BY Customer[Birth Date] DESC
+
+EVALUATE
+SUMMARIZE(Customer,Customer[Birth Date])

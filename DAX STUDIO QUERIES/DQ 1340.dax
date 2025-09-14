@@ -1,0 +1,30 @@
+﻿EVALUATE
+VAR top10 = TOPN ( 10, 
+			VALUES ( Customer[CustomerKey] ),
+ 			[Sales Amount] )
+RETURN
+			
+CALCULATETABLE(
+	ADDCOLUMNS(
+		top10,
+		"sales CY",
+		[Sales Amount]
+	),
+	'Date'[Year] = "CY 2007")
+
+EVALUATE
+VAR top10 = TOPN ( 10, 
+			VALUES ( Customer[CustomerKey] ),
+ 			[Sales Amount] )
+RETURN
+
+SUMMARIZECOLUMNS(
+	'Date'[Year], 	// Groupyby_ColumnName lists all years 
+ 	TOPN(			// top10 is our filter table in summarizecolumns
+		10,			// we want the top 10
+		VALUES(Sales[CustomerKey]),			// get the distinct customerkey values in Sales
+		[Sales Amount]					
+	), 				// TOPN ends here
+		//TREATAS({"cy 2009"},'Date'[Year]),		// if you want to filter the resulting table
+		"Sales",							// Name of the new column
+		[Sales Amount])						// compute the sale amount for each customerKey

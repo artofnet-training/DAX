@@ -1,0 +1,31 @@
+﻿
+DEFINE
+    VAR CustomersByCountry =
+        SELECTCOLUMNS (
+            TREATAS ( { "Armenia", "Australia", "Denmark" }, Customer[CountryRegion] ),
+            "Country", Customer[CountryRegion] & "",
+            "NumOfCustomers", CALCULATE ( COUNTROWS ( Customer ) )
+        )
+    VAR CustomersByCountry =
+        SELECTCOLUMNS (
+            TREATAS ( { "Armenia", "Australia", "Denmark" }, Customer[CountryRegion] ),
+            "Country", Customer[CountryRegion] & "",
+            "NumOfCustomer", CALCULATE ( COUNTROWS ( Customer ) )
+        )
+--  NATURALLEFTOUTERJOIN performs a left outer join between two
+--  tables, joining columns with the same name.
+--  NATURALINNERJOIN performs an inner join.
+--  Corresponding columns must both have the same lineage, or no lineage.
+
+EVALUATE StoresByCountry
+ 
+EVALUATE CustomersByCountry
+ 
+EVALUATE
+    NATURALLEFTOUTERJOIN ( StoresByCountry, CustomersByCountry )
+     
+EVALUATE
+    NATURALLEFTOUTERJOIN ( CustomersByCountry, StoresByCountry )
+     
+EVALUATE
+    NATURALINNERJOIN ( StoresByCountry, CustomersByCountry )

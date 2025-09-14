@@ -1,0 +1,47 @@
+﻿DEFINE
+// Generates the table containing the years during which sales occurred (CY2007,CY2008,CY2009)
+VAR tbl_years = SUMMARIZE (
+        Sales,
+        'Date'[Year]
+    )
+
+//Query 1
+EVALUATE
+tbl_years
+
+//Query 2
+EVALUATE
+ADDCOLUMNS (
+            VALUES ( 'Product'[Product Name] ),
+            "Amt", [Sales Amount]
+)
+
+//Query 3
+EVALUATE
+TOPN (
+        3,
+        ADDCOLUMNS (
+            VALUES ( 'Product'[Product Name] ),
+            "Amt", [Sales Amount]
+        ),
+        [Amt]
+    )
+order by [Amt] DESC
+
+//Query 4
+EVALUATE
+GENERATE (
+    tbl_years,
+    // calculate the top 3 of products for the current year 
+	TOPN (
+        3,
+        ADDCOLUMNS (
+            VALUES ( 'Product'[Product Name] ),
+            "Amt", [Sales Amount]
+        ),
+        [Amt]
+    )
+)
+ORDER BY
+    'Date'[Year] ASC,
+    [Amt] DESC
